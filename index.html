@@ -1,1 +1,327 @@
-Hello World
+<!doctype html>
+<html>
+<head>
+	<link rel="stylesheet/less" type="text/css" href="css/main.less" />
+	<script src="script/less-1.3.3.min.js" type="text/javascript"></script>
+<style>
+body {
+	background: url(img/shl.png);
+}
+</style>
+</head>
+<body>
+	<div class="row"  style="margin-top: 1em;">
+		<div class="large-3 columns">
+			<div style="margin-bottom: 1em;">
+				<span style="font-size: 2.3125em; font-weight: bold;">Thach MAI</span>
+				<br/>
+				<a href="mailto:contact@thachmai.info">contact@thachmai.info</a>
+			</div>
+		</div>
+		<div class="large-4 columns">
+		</div>
+	</div>
+	<div class="row content">
+		<div class="large-12 columns">&nbsp;</div>
+	</div>
+	<div class="row content" data-ng-app="ExpEdu">
+		<div class="large-7 columns" data-ng-controller="ExperienceCtrl">
+			<div class="">
+				<div class="company">2009-present - <b>Intitek</b></div>
+				<div data-position="Valence" data-description>Project Transportation Datamining, <b>Xerox</b></div>
+				<div data-position="Grenoble" data-description>Project Transportation Datamining, <b>Xerox Research</b></div>
+				<div data-position="Valence" data-description>Project Financial Administration, <b>Xerox</b></div>
+			</div>
+
+			<div class="company">2008-2009 - <b>Asia Pacific Breweries</b> 
+			</div>
+			<div data-position="Singapore">Project Marketing Analysis, <b>R&D</b>
+			</div>
+
+			<div class="company">2007 - <b>Astek</b>
+			</div>
+			<div data-position="Grenoble">Project Opidin, Cristal-Net, <b>CHU Grenoble</b>
+			</div>
+
+			<div class="company">2006 - <b>TRG International</b>
+			</div>
+			<div data-position="Hochiminh">General Manager, <b>Software Development Department</b>
+			</div>
+
+			<div class="company">2005 - <b>DHS Communications</b>
+			</div>
+			<div data-position="Hochiminh">Team Lead, <b>Hochiminh office</b>
+			</div>
+
+			<div class="company">2003-2005 - <b>TMA Solutions</b>
+			</div>
+			<div data-position="Hochiminh">Technical Adviser, <b>Business Development Department</b>
+			</div>
+			<div data-position="Oklahoma">ATOS Bridge Engineer, <b>Training Scholarship</b>
+			</div>
+			<div data-position="Hochiminh">Project Calendar Component, <b>Critical Path</b>
+			</div>
+
+			<div class="company">2002 - <b>Algonquin College</b>
+			</div>
+			<div data-position="Ottawa">Software Development Diploma
+			</div>
+
+		</div>
+		<div class="large-5 columns">
+			<div style="padding: 1.25em; border: 1px solid transparent; background: #f2f2f2; height: 51em;">
+				<div id="GlobeContainer">
+					<canvas id="GlobeCanvas">
+					</canvas>
+				</div>
+			</div>
+
+		</div>
+	</div>
+	<div class="row content">
+		<div class="large-12 columns">&nbsp;</div>
+	</div>
+	<script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.0.8/d3.min.js"></script>
+	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
+	<!--
+	<script src="d3.v3.min.js"></script>
+	<script src="angular.min.js"></script>
+	-->
+	<script src="topojson.v0.min.js"></script>
+
+	<script>
+		function GeoHighlight(id, lon, lat, onActivate) {
+			this.id = id;
+			this.lon = lon;
+			this.lat = lat;
+			this.onActivate = onActivate;
+
+			return this;
+		}
+
+		angular.module('ExpEdu', [])
+			.directive('position', function () {
+				return function (scope, element, attrs) {
+					element.addClass('highlightable');
+
+					element.bind('mouseover', function () {
+						scope.position(attrs.position, element);
+					});
+				};
+			})
+			.directive('description', function () {
+				return function (scope, element, attrs) {
+					element.bind('mouseover', function () {
+						scope.description(attrs.description);
+					});
+				};
+			});
+
+		function ExperienceCtrl($scope) {
+			var lastHighlightElement = null;
+
+			$scope.position = function (id, element) {
+				if (lastHighlightElement !== null) lastHighlightElement.removeClass('panel');
+				//else angular.element(document.getElementById('GlobeContainer')).parent().addClass('panel');
+
+				element.addClass('panel');
+				globeController.glideTo(id);
+				lastHighlightElement = element;
+			};
+
+			$scope.description = function (id) {
+
+			}
+		}
+	</script>
+
+	<script>
+	(function (globeController) {
+		var radius = 100;
+		var globeContainer = d3.select('#GlobeContainer').node();
+		var globeCanvas = d3.select('#GlobeCanvas').attr('width', radius * 2).attr('height', radius * 2);
+		var globeContext = globeCanvas.node().getContext('2d');
+		var globeProjection = d3.geo.orthographic().scale(radius - 2).translate([radius, radius]).clipAngle(90);
+		var globePath = d3.geo.path().projection(globeProjection).context(globeContext);
+		var worldGeojson = null;
+		var highlightGeojson = null;
+		var highlights = null;
+		var globeStop = false;
+		var lastMouseCheck = Date.now();
+		var style = { highlightColor: 'rgba(255, 0, 0, 0.6)' };
+		var spinState = {};
+
+		globeController.projection = globeProjection;
+
+		function drawGlobe(rotations) {
+			var coords;
+
+			globeProjection.rotate([rotations[0], rotations[1], 0]);
+			//console.log(globeProjection.rotate()[0]);
+
+			// code path for canvas rendering
+			// much faster but offers no easy way for interaction
+			globeContext.clearRect(0 ,0, radius * 2, radius * 2);
+
+			globeContext.beginPath();
+			globePath(worldGeojson);
+			globeContext.fillStyle = 'gray';
+			globeContext.fill();
+
+			var coords = globeProjection([0, 0]);
+			globeContext.fillStyle = style.highlightColor;
+			globeContext.beginPath();
+			globePath(highlightGeojson);
+			globeContext.fill();
+		}
+
+		function dragGlobe(dx, dy) {
+			var rotates = globeProjection.rotate(),
+				rawY = globeProjection.rotate()[1] - dy,
+				//xOffset = (rotates[1] < -450 || rotates[1] > 90) ? -dx : dx; // when the globe is "up-side-down", we'd want to invert the x axis movement too
+				yRotation =  rawY > 30 ? 30 : rawY;
+
+			if (yRotation < -30) {
+				yRotation = -30;
+			} 
+
+			drawGlobe([globeProjection.rotate()[0] + dx, yRotation]);
+		}
+
+		// returns the highlight for the (approx) position
+		// returns null if there is no match
+		function findHighlight(position) {
+			var result = null;
+
+			if (Array.isArray(highlights)) {
+				highlights.forEach(function (h) {
+					if (Math.abs(h.lon - position[0]) < 4 && Math.abs(h.lat - position[1]) < 4) {
+						result = h;
+						return;
+					}
+				});
+			}
+
+			return result;
+		}
+
+		function handleCanvasMouseover() {
+			var now = Date.now(), found = false, match, screenPos;
+
+			if (now - lastMouseCheck < 200) {
+				return;
+			}
+
+			lastMouseCheck = now;
+
+			match = findHighlight(globeProjection.invert(d3.mouse(globeContainer)));
+
+			if (match !== null) {
+				globeStop = true;
+				drawGlobe(globeProjection.rotate());
+
+				globeContext.fillStyle = style.highlightColor;
+				globeContext.font = "bold 15px Arial";
+				globeContext.textAlign = "center";
+				globeContext.textBaseline = "bottom";
+
+				screenPos = globeProjection([match.lon, match.lat]);
+				globeContext.fillText(match.id, screenPos[0], screenPos[1] - 5);
+			}
+		}
+
+		// init //
+		d3.json('world-110m.json', function (error, world) {
+			var start = Date.now(), velocity = 0.01,
+				drag = d3.behavior.drag();
+
+			worldGeojson = topojson.object(world, world.objects.land);
+
+			d3.timer(function () {
+				var angle = (Date.now() - start) * velocity;
+
+				if (!globeStop) {
+					drawGlobe([angle, -10]);
+				} else {
+					return true;
+				}
+			});
+
+			drag.on('dragstart', function () { globeStop = true; });
+			drag.on('drag', function () {
+				dragGlobe(d3.event.dx, d3.event.dy);
+			});
+			globeCanvas.call(drag);
+
+			globeCanvas.on('mouseover', handleCanvasMouseover);
+			globeCanvas.on('mousemove', handleCanvasMouseover);
+		});
+
+		// public //
+		globeController.centerGlobe = function (center) {
+			drawGlobe([-center[0], -center[1]]);
+		};
+
+		globeController.glideTo = function (destination) {
+			var start = Date.now(),
+				rotates = globeProjection.rotate(),
+				center;
+
+			if (typeof destination === 'string') {
+				highlights.forEach(function (h) {
+					if (h.id === destination) {
+						center = [h.lon, h.lat];
+					}
+				});
+			} else {
+				center = destination;
+			}
+			
+			globeStop = true;
+
+			spinState.forceStop = true;
+
+			d3.timer.flush();
+
+			spinState.forceStop = false;
+			spinState.start = Date.now();
+			spinState.lonInt = d3.interpolate(rotates[0], -center[0]);
+			spinState.latInt = d3.interpolate(rotates[1], - center[1]);
+			spinState.center = center;			
+
+			d3.timer(function () {
+				var now = Date.now(),
+					duration = 1000;
+
+				drawGlobe([spinState.lonInt((now - start)/duration), spinState.latInt((now - start)/duration)]);
+				//console.log(globeProjection.rotate()[0] + center[0], globeProjection.rotate()[1] + center[1]);
+
+				if (spinState.forceStop) {
+					return true;
+				}
+				else if (Math.abs(globeProjection.rotate()[0] + spinState.center[0]) < 2 && Math.abs(globeProjection.rotate()[1] + spinState.center[1]) < 2) {
+					return true;
+				} else if (now - start > duration) {
+					 return true;
+				}
+			});
+		};
+
+		globeController.setGeoHighlights = function (geoHighlights) {
+			highlightGeojson = { type: 'MultiPoint', coordinates: [] };
+
+			geoHighlights.forEach(function (h) {
+				highlightGeojson.coordinates.push([h.lon, h.lat]);
+			});
+
+			highlights = geoHighlights;
+		};
+	} (window.globeController = {}));
+	</script>
+
+	<script>
+		globeController.setGeoHighlights([new GeoHighlight('Grenoble', 6, 45), new GeoHighlight('Valence', 4.89, 44.9), new GeoHighlight('Hochiminh', 106.66, 10.75), new GeoHighlight('Singapore', 103.75, 1.366),
+			new GeoHighlight('Ottawa', -75.6919, 45.4214), new GeoHighlight('Oklahoma', 139.65, 35.5)]);
+	</script>
+</body>
+</html>
