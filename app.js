@@ -48,30 +48,30 @@ angular.module('Skillset', [])
 			domains: [
 				{
 				    value: 2, serieName: 'Geo information system',
-				    description: ''
+				    description: 'Having worked with OpenStreetMap, Google Maps API, OpenLayers and Mapnik, I\'m proficient with using and creating a geographical information system.'
 				},
 				{
 				    value: 2.5, serieName: 'Public transport domain',
-				    description: ''
+				    description: 'With four years of experience in various public transporation projects, I have a thourough understanding of the unique challenges in this domain.'
 				},
 				{
-				    value: 3, serieName: 'git',
-				    description: ''
+				    value: 2.5, serieName: 'git',
+				    description: 'I\'m comfortable with various tasks related to the git source control system: server setup, access control, branching models as well as the distributed nature of git.'
 				},
 				{
 				    value: 2, serieName: 'Agile process',
-				    description: ''
+				    description: 'With over three years of experience with Agile process (mainly SCRUM), I\'m familiar with the agile methodologies, their advantages as well as limitations.'
 				},
 				{
 				    value: 2.5, serieName: 'Engineering best practices',
-				    description: ''
+				    description: 'I\'m familiar with various software engineering best practices including TDD, agile methodology as well as other popular best practices such as the SOLID concepts, DRY, YAGNI, etc.'
 				}
 			]
 		};
 	})
 	.directive('chart', function () {
 		return function (scope, element, attrs) {
-			element.bind('mouseover', function () {
+			element.bind('click', function () {
 				scope.chart(attrs.chart, element);
 			});
 		};
@@ -159,14 +159,14 @@ angular.module('ExpEdu', [])
 		return function (scope, element, attrs) {
 			element.addClass('highlightable');
 
-			element.bind('mouseover', function () {
+			element.bind('click', function () {
 				scope.position(attrs.position, element);
 			});
 		};
 	})
 	.directive('description', function () {
 		return function (scope, element, attrs) {
-			element.bind('mouseover', function () {
+			element.bind('click', function () {
 				scope.description(attrs.description);
 			});
 		};
