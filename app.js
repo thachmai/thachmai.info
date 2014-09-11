@@ -33,6 +33,10 @@ angular.module('Skillset', [])
 				    description: 'I have extensive working knowledge with the language in different domains, from implementing machine learning algorithms to building backend web services using C#.'
 				},
 				{
+				    value: 1.5, serieName: 'Java',
+				    description: 'Working knowledge with Java including Spring framework, Maven and JVM monitoring/performance tuning.'
+				},
+				{
 				    value: 2.5, serieName: 'DBMS / SQL',
 				    description: 'With extensive experience in using various DBMS (Oracle, SQL Server, Postgres), I\'m familiar with database design, implementation, migration, as well as performance tuning.'
 				},
@@ -53,6 +57,10 @@ angular.module('Skillset', [])
 				{
 				    value: 2.5, serieName: 'Public transport domain',
 				    description: 'With four years of experience in various public transporation projects, I have a thourough understanding of the unique challenges in this domain.'
+				},
+				{
+				    value: 2, serieName: 'Deployment',
+				    description: 'Experienced with the deployment process and tools including VM Ware, Docker, MSBuild and Maven.'
 				},
 				{
 				    value: 2.5, serieName: 'git',
@@ -119,7 +127,11 @@ angular.module('ExpEdu', [])
 		}
 
 		return [
-			new e(['Design and implement an HTML5 application from the research prototype',
+			new e(['Design a simple domain-specific language (DSL) to configure the workflow of a voice server',
+				'Implement an web based drag-and-drop editor for the DSL'],
+				['French', 'English'],
+				['Javascript', 'HTML5', 'D3.js', 'AngularJS', 'Java', 'Spring', 'SQL', 'DSL']),
+			new e(['Designed and implemented an HTML5 application from the research prototype',
 				'Technical direction and guidance for the team'],
 				['French', 'English'],
 				['Asp.NET MVC', 'Javascript', 'HTML5', 'jQuery', 'D3.js', 'Ninject', 'xUnit', 'OpenLayers', 'C#', 'Oracle']),
