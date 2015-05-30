@@ -1,0 +1,20 @@
+.status {
+    background: #E0E0E0;
+}
+
+.surround {
+    background: #F5F5F5;
+    box-shadow: 0 0 1px gray;
+}
+
+.ambient {
+    background: #FAFAFA;
+}
+
+.paper {
+    background: white;
+    box-shadow: 2px 2px 5px 1px gray;
+    border-radius: 3px;
+    padding: 1em;
+    margin-top: 2em;
+}

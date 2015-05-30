@@ -13,6 +13,7 @@
         <!-- CSS -->
         <link rel="stylesheet" href="css/normalize.css">
         <link rel="stylesheet" href="css/skeleton.css">
+        <link rel="stylesheet" href="css/main.css">
 
         <!-- Favicon -->
 <!--        <link rel="icon" type="image/png" href="imgs/favicon.png">
@@ -27,14 +28,77 @@ ga('send', 'pageview');
         </script>
     -->
     </head>
-    <body>
+    <body class="ambient">
+        <!-- top header -->
+        <div class="surround" style="height: 50px;">
             <div class="container">
-                <div class="row">
-                    <div class="one-half column" style="margin-top: 25%">
-                        <h4>Basic Page</h4>
-                        <p>This index.html page is a placeholder with the CSS, font and favicon. It's just waiting for you to add some content! If you need some help hit up the <a href="http://www.getskeleton.com">Skeleton documentation</a>.</p>
-                    </div>
+                <h4>Thach MAI</h4>
+            </div>
+        </div>
+
+        <!-- main content -->
+        <div class="container">
+            <div class="row paper">
+                <h4>Who I am</h4>
+                <p>This index.html page is a placeholder with the CSS, font and favicon. It's just waiting for you to add some content! If you need some help hit up the <a href="http://www.getskeleton.com">Skeleton documentation</a>.</p>
+            </div>
+
+            <div class="row">
+                <div id="Front" class="three columns paper">
+                    <h6>Web Frontend</h6>
+                </div>
+                <div id="Back" class="three columns paper">
+                    <h6>Backend</h6>
+                </div>
+                <div id="DevOps" class="three columns paper">
+                    <h6>DevOps</h6>
+                </div>
+                <div id="Business" class="three columns paper">
+                    <h6>Business Domain</h6>
                 </div>
             </div>
+
+             <div class="row paper">
+                <h4>What I've been working on</h4>
+                <p>This index.html page is a placeholder with the CSS, font and favicon. It's just waiting for you to add some content! If you need some help hit up the <a href="http://www.getskeleton.com">Skeleton documentation</a>.</p>
+            </div>
+
+             <div class="row paper">
+                <h4>What I studied</h4>
+                <p>This index.html page is a placeholder with the CSS, font and favicon. It's just waiting for you to add some content! If you need some help hit up the <a href="http://www.getskeleton.com">Skeleton documentation</a>.</p>
+            </div>
+
+      </div>
+      <script src="d3.v3.min.js"></script>
+      <script>
+function paperCombine(originatorId) {
+    var transCount = 0;
+
+    function makeSingle() {
+        var xOffset;
+        if (--transCount) {
+            return;
+        }
+
+        var front = document.getElementById('Front');
+        var selected = document.getElementById(originatorId);
+        xOffset = selected.getBoundingClientRect().left - front.getBoundingClientRect().left;
+
+        d3.select('#' + originatorId).style('width', '100%').style('margin-left', '0%');
+        d3.selectAll('.three.columns:not(#' + originatorId + ')').style('display', 'none');
+        d3.select('#' + originatorId + ' h6').style('margin-left', xOffset + 'px').transition().duration(3 * xOffset)
+            .style('margin-left', '0px');
+   }
+
+    d3.selectAll('.three.columns').transition()//.duration(4000)
+        .styleTween('width', function() { return d3.interpolate('22%', '24.5%'); })
+        .styleTween('margin-left', function() { 
+            var start = this.id === 'Front' ? '0%' : '4%';
+            var end = this.id === 'Front' ? '0%' : '0.5%';
+            return d3.interpolate(start, end);
+        }).each(function () { transCount++; })
+        .each('end', makeSingle);
+}
+      </script>
     </body>
 </html>
