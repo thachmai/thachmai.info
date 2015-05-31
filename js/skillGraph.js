@@ -1,0 +1,58 @@
+'use strict';
+
+function skillGraph() {
+    function me() {
+    }
+
+    var COMPACT_DIVIDER = 0.5;
+    var COMPACT_HEIGHT = 20;
+    var skills = [];
+    var width = 0;
+
+    function myRender() {
+        function circles(d, i) {
+            console.log(d, i);
+        }
+
+        var binding = d3.select(this).selectAll('.skill').data(skills, function (d) { return d.id; });
+        var enter = binding.enter().append('g').attr('class', 'skill');
+
+        // labels
+        enter.append('text').text(function (d) { return d.name; })
+            .attr('text-anchor', 'end')
+            .attr('x', width * COMPACT_DIVIDER).attr('y', function (d, i) { return (i + 1) * COMPACT_HEIGHT; });
+
+        // circles
+        enter.each(circles);
+    }
+
+    // "this" must refer to the node to render into
+    // returns the size of the graph in pixels
+    me.render = function (selection) {
+        selection.each(myRender);
+    };
+
+    // skill format: { id, name, level (0 to 4), description }
+    me.skills = function (value) {
+        if (!value) return skills;
+
+        skills = value;
+        return me;
+    };
+
+    me.width = function (value) {
+        if (!value) return width;
+
+        width = value;
+        return me;
+    };
+
+    // this should be called after .skills and width to get the height for the graph
+    me.estHeight = function () {
+        return (skills.length + 1) * COMPACT_HEIGHT;
+    };
+
+    return me;
+}
+
+window.skillGraph = skillGraph;

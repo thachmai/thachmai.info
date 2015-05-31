@@ -70,6 +70,7 @@ ga('send', 'pageview');
 
       </div>
       <script src="d3.v3.min.js"></script>
+      <script src="js/skillGraph.js"></script>
       <script>
 function paperCombine(originatorId) {
     var transCount = 0;
@@ -91,13 +92,33 @@ function paperCombine(originatorId) {
    }
 
     d3.selectAll('.three.columns').transition()//.duration(4000)
-        .styleTween('width', function() { return d3.interpolate('22%', '24.5%'); })
+        .styleTween('width', function() { return d3.interpolate('22%', '25%'); })
         .styleTween('margin-left', function() { 
             var start = this.id === 'Front' ? '0%' : '4%';
-            var end = this.id === 'Front' ? '0%' : '0.5%';
+            var end = this.id === 'Front' ? '0%' : '0%';
             return d3.interpolate(start, end);
         }).each(function () { transCount++; })
         .each('end', makeSingle);
+}
+
+d3.selectAll('.three.columns').on('click', function () {
+    paperCombine(this.id);
+    compactPanel(this.id);
+});
+
+var skills = [
+    { id: 'js', name: 'javascript', level: 4, description: '' },
+    { id: 'html5', name: 'html5', level: 3.5, description: '' },
+];
+
+function compactPanel(id) {
+    var panel = d3.select('#' + id);
+    var width = panel.node().clientWidth - 16;
+    var svg = panel.append('svg').attr('width', width + 'px');
+
+    var graph = skillGraph().skills(skills).width(width);
+    svg.attr('height', graph.estHeight() + 'px');
+    svg.call(graph.render);
 }
       </script>
     </body>
