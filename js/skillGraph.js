@@ -11,7 +11,32 @@ function skillGraph() {
 
     function myRender() {
         function circles(d, i) {
-            console.log(d, i);
+            var r = 7;
+            var that = this;
+
+            // x, y: center, value: 0, 0.5 or 1
+            function circle(x, y, value) {
+                if (value !== 0.5) {
+                    d3.select(that).append('circle').attr('cx', x).attr('cy', y).attr('r', r)
+                        .attr('class', function () { return value ? 'skill-fill' : 'skill-empty'; });
+                } else {
+                    d3.select(that).append('path').attr('d', function () {
+                        return ['M', x, y - r, 'A', r, r, '0 0 0', x, y + r, 'Z'].join(' ');
+                    }).attr('class', 'skill-fill');
+                    d3.select(that).append('path').attr('d', function () {
+                        return ['M', x, y - r, 'A', r, r, '0 0 1', x, y + r].join(' ');
+                    }).attr('class', 'skill-empty');
+                }
+            }
+
+            d3.range(1, 5).forEach(function (n) {
+                var x = width * COMPACT_DIVIDER + n * 20;
+                var y = (i + 1) * COMPACT_HEIGHT - r + 2;
+                var value = (d.level >= n) ? 1 :
+                    ((d.level === n - 0.5) ? 0.5 : 0);
+
+                circle(x, y, value);
+            });
         }
 
         var binding = d3.select(this).selectAll('.skill').data(skills, function (d) { return d.id; });

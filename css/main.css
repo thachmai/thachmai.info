@@ -18,3 +18,20 @@
     padding: 8px;
     margin-top: 2em;
 }
+
+svg text {
+    fill: #222;
+    stroke: none;
+}
+
+.skill-fill {
+    stroke: #222;
+    fill: #222;
+    stroke-width: 1px;
+}
+
+.skill-empty {
+    stroke: #222;
+    fill: none;
+    stroke-width: 1px;
+}

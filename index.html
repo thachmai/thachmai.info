@@ -103,15 +103,28 @@ function paperCombine(originatorId) {
 
 d3.selectAll('.three.columns').on('click', function () {
     paperCombine(this.id);
-    compactPanel(this.id);
 });
 
 var skills = [
-    { id: 'js', name: 'javascript', level: 4, description: '' },
-    { id: 'html5', name: 'html5', level: 3.5, description: '' },
+    [
+        { id: 'js', name: 'javascript', level: 4, description: '' },
+        { id: 'html5', name: 'html5', level: 3.5, description: '' },
+    ],
+    [
+        { id: 'c#', name: 'C#', level: 3.5, description: '' },
+        { id: 'sql', name: 'SQL', level: 3.5, description: '' },
+    ],
+    [
+        { id: 'linux', name: 'Linux', level: 3, description: '' },
+        { id: 'windows', name: 'Windows', level: 3, description: '' },
+    ],
+    [
+        { id: 'danalysis', name: 'D.Analysis', level: 3, description: '' },
+        { id: 'geo', name: 'Geo system', level: 3.5, description: '' },
+    ],
 ];
 
-function compactPanel(id) {
+function compactPanel(id, skills) {
     var panel = d3.select('#' + id);
     var width = panel.node().clientWidth - 16;
     var svg = panel.append('svg').attr('width', width + 'px');
@@ -120,6 +133,10 @@ function compactPanel(id) {
     svg.attr('height', graph.estHeight() + 'px');
     svg.call(graph.render);
 }
+
+['Front', 'Back', 'DevOps', 'Business'].forEach(function (s, i) {
+    compactPanel(s, skills[i]);
+});
       </script>
     </body>
 </html>
