@@ -11,38 +11,40 @@ function skillGraph() {
     var width = 0;
     var lastMode;
 
+
     function renderCompact() {
         function circlesEnter(d, i) {
             var r = 7;
-            var that = this;
 
-            // x, y: center, value: 0, 0.5 or 1
-            function circle(x, y, value) {
-                if (value !== 0.5) {
-                    d3.select(that).append('path').attr('d', function () {
+            function circle(d, j) {
+                var x = width * COMPACT_DIVIDER + (j + 1) * ( r * 2 + r / GOLDEN );
+                var y = (i + 1) * COMPACT_HEIGHT - r + 2;
+
+                if (d !== 0.5) {
+                    d3.select(this).append('path').attr('d', function () {
                         return ['M', x, y - r, 'a', r, r, '0 0 0 0 ', 2 * r,
                         'h 0',
                         'a', r, r, '0 0 0 0', -2 * r, 
                         'h 0 Z'].join(' ');
-                    }).attr('class', function () { return value ? 'skill-fill' : 'skill-empty'; });
+                    }).attr('class', function () { return d ? 'skill-fill' : 'skill-empty'; });
                 } else {
-                    d3.select(that).append('path').attr('d', function () {
+                    d3.select(this).append('path').attr('d', function () {
                         return ['M', x, y - r, 'a', r, r, '0 0 0 0', 2 * r, 'h 0 v', -2 * r, 'Z'].join(' ');
                     }).attr('class', 'skill-fill');
-                    d3.select(that).append('path').attr('d', function () {
+                    d3.select(this).append('path').attr('d', function () {
                         return ['M', x, y - r, 'h 0 a', r, r, '0 0 1 0', 2 * r, 'h 0 Z',].join(' ');
                     }).attr('class', 'skill-empty');
                 }
             }
 
-            d3.range(1, 5).forEach(function (n) {
-                var x = width * COMPACT_DIVIDER + n * ( r * 2 + r / GOLDEN );
-                var y = (i + 1) * COMPACT_HEIGHT - r + 2;
-                var value = (d.level >= n) ? 1 :
+            var bars = d3.range(1, 5).map(function (n) {
+                return (d.level >= n) ? 1 :
                     ((d.level === n - 0.5) ? 0.5 : 0);
-
-                circle(x, y, value);
             });
+
+            d3.select(this).selectAll('.bar').data(bars)
+                .enter()
+                .append('g').attr('class', 'bar').each(circle);
         }
 
         var binding = d3.select(this).selectAll('.skill').data(skills, function (d) { return d.id; });
@@ -61,6 +63,10 @@ function skillGraph() {
 
     function renderBar() {
         var binding = d3.select(this).selectAll('.skill').data(skills, function (d) { return d.id; });
+
+        if (lastMode === 'compact') {
+        }
+
         var enter = binding.enter().append('g').attr('class', 'skill');
     }
 
