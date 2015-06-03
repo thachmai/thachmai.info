@@ -131,7 +131,7 @@ function compactPanel(id, skills) {
 
     var graph = skillGraph().skills(skills).width(width);
     svg.attr('height', graph.estHeight() + 'px');
-    svg.call(graph.render);
+    svg.call(graph.renderCompact);
 }
 
 ['Front', 'Back', 'DevOps', 'Business'].forEach(function (s, i) {
