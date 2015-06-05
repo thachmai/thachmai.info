@@ -10,7 +10,7 @@ function skillGraph() {
     var skills = [];
     var width = 0;
     var lastMode;
-
+    var barPadding;
 
     function renderCompact() {
         function circlesEnter(d, i) {
@@ -61,19 +61,22 @@ function skillGraph() {
         enter.each(circlesEnter);
     }
 
-    function renderBar() {
-        var binding = d3.select(this).selectAll('.skill').data(skills, function (d) { return d.id; });
-
-        if (lastMode === 'compact') {
-        }
-
-        var enter = binding.enter().append('g').attr('class', 'skill');
+    function transitionToBar(padding, duration) {
     }
 
     // "this" must refer to the node to render into
     // returns the size of the graph in pixels
     me.renderCompact = function (selection) {
         selection.each(renderCompact);
+    };
+
+    me.transitionToBar = function (selection, padding, duration) {
+        selection.each(function (d, i) {
+            var binding = d3.select(this).selectAll('.skill');
+
+            binding.attr('transform', 'translate(' + padding + ' 0)').transition().duration(duration)
+                .attr('transform', 'translate(' + width * COMPACT_DIVIDER + ' 0)');
+        });
     };
 
     // skill format: { id, name, level (0 to 4), description }
@@ -88,6 +91,13 @@ function skillGraph() {
         if (!value) return width;
 
         width = value;
+        return me;
+    };
+
+    me.barPadding = function (value) {
+        if (!value) return barPadding;
+
+        barPadding = value;
         return me;
     };
 
