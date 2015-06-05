@@ -92,8 +92,6 @@ function paperCombine(originatorId) {
             .style('margin-left', '0px');
 
         var width = selected.clientWidth - 16;
-        //d3.select('#' + originatorId + ' svg').style('margin-left', xOffset + 'px').transition().duration(duration)
-            //.style('margin-left')
         var graph = skillGraph().skills(skills).width(width);
         d3.select('#' + originatorId + ' svg').attr('width', width + 'px')
             .call(graph.transitionToBar, xOffset, duration);
