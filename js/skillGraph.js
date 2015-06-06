@@ -90,7 +90,7 @@ function skillGraph() {
         lastMode = 'compact';
 
         // labels
-        enter.append('text').text(function (d) { return d.name; })
+        enter.append('text').text(function (d) { return d.sname; })
             .attr('text-anchor', 'end')
             .attr('x', barTextX(0)).attr('y', function (d, i) { return (i + 1) * COMPACT_HEIGHT; });
 

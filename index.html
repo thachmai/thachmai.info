@@ -44,17 +44,17 @@ ga('send', 'pageview');
             </div>
 
             <div class="row">
-                <div id="Front" class="three columns paper">
-                    <h6>Web Frontend</h6>
+                <div id="front" class="three columns paper">
+                    <h6>Frontend</h6>
                 </div>
-                <div id="Back" class="three columns paper">
+                <div id="back" class="three columns paper">
                     <h6>Backend</h6>
                 </div>
-                <div id="DevOps" class="three columns paper">
+                <div id="ops" class="three columns paper">
                     <h6>DevOps</h6>
                 </div>
-                <div id="Business" class="three columns paper">
-                    <h6>Business Domain</h6>
+                <div id="bus" class="three columns paper">
+                    <h6>Domain</h6>
                 </div>
             </div>
 
@@ -81,7 +81,7 @@ function paperCombine(originatorId) {
             return;
         }
 
-        var front = document.getElementById('Front');
+        var front = document.getElementById('front');
         var selected = document.getElementById(originatorId);
         xOffset = selected.getBoundingClientRect().left - front.getBoundingClientRect().left;
         var duration = Math.max(100 * Math.log2(xOffset), 600);
@@ -100,8 +100,8 @@ function paperCombine(originatorId) {
     d3.selectAll('.three.columns').transition()//.duration(4000)
         .styleTween('width', function() { return d3.interpolate('22%', '25%'); })
         .styleTween('margin-left', function() { 
-            var start = this.id === 'Front' ? '0%' : '4%';
-            var end = this.id === 'Front' ? '0%' : '0%';
+            var start = this.id === 'front' ? '0%' : '4%';
+            var end = this.id === 'front' ? '0%' : '0%';
             return d3.interpolate(start, end);
         }).each(function () { transCount++; })
         .each('end', makeSingle);
@@ -111,23 +111,42 @@ d3.selectAll('.three.columns').on('click', function () {
     paperCombine(this.id);
 });
 
+function Skill(group, id, sname, lname, level, compact, desc) {
+    if (!(this instanceof Skill)) return new Skill(group, id, sname, lname, level, compact, desc);
+
+    this.group = group;
+    this.id = id;
+    this.sname = sname;
+    this.lname = lname;
+    this.level = level;
+    this.compact = compact;
+    this.desc = desc;
+}
+
 var skills = [
-    [
-        { id: 'js', name: 'javascript', level: 4, description: '' },
-        { id: 'html5', name: 'html5', level: 3.5, description: '' },
-    ],
-    [
-        { id: 'c#', name: 'C#', level: 3.5, description: '' },
-        { id: 'sql', name: 'SQL', level: 3.5, description: '' },
-    ],
-    [
-        { id: 'linux', name: 'Linux', level: 3, description: '' },
-        { id: 'windows', name: 'Windows', level: 3, description: '' },
-    ],
-    [
-        { id: 'danalysis', name: 'D.Analysis', level: 3, description: '' },
-        { id: 'geo', name: 'Geo system', level: 3.5, description: '' },
-    ],
+    Skill('front', 'js', 'JS', 'Javascript', 4, true, ''),
+    Skill('front', 'html5', 'HTML5', 'HTML5', 3.5, true, ''),
+    Skill('front', 'dv', 'Data Vis.', 'Data Visualization', 3.5, true, ''),
+    Skill('front', 'wp', 'Web Perf.', 'Web Performance', 3, false, ''),
+    Skill('front', 'ui', 'Design', 'UI Design', 2.5, false, ''),
+
+    Skill('back', 'c#', 'C#', 'C#', 3.5, true, ''),
+    Skill('back', 'sql', 'SQL', 'SQL', 3.5, true, ''),
+    Skill('back', 'nosql', 'NoSQL', 'NoSQL', 3, true, ''),
+    Skill('back', 'perf', 'Perf. Test', 'Performance Test', 2.5, false, ''),
+    Skill('back', 'haskell', 'Haskell', 'Haskell', 3, false, ''),
+
+    Skill('ops', 'linux', 'Linux', 'Linux', 3, true, ''),
+    Skill('ops', 'win', 'Windows', 'Windows', 3, false, ''),
+    Skill('ops', 'docker', 'Docker', 'Docker', 2.5, true, ''),
+    Skill('ops', 'auto', 'IT Auto.', 'IT Automation', 2.5, true, ''),
+    Skill('ops', 'scripts', 'Scripting', 'Shell Scripting', 3, false, ''),
+
+    Skill('bus', 'danal', 'D. Analys', 'Data Analysis', 3, true, ''),
+    Skill('bus', 'geo', 'Geo Sys.' , 'Geographic System', 3, true, ''),
+    Skill('bus', 'learn', 'Learning', 'Learning Speed', 3, true, ''),
+    Skill('bus', 'process', 'Bus. Process', 'Business Process', 2.5, false, ''),
+    Skill('bus', 'crit', 'Crit. Think.', 'Critical Thinking', 3, false, ''),
 ];
 
 function compactPanel(id, skills) {
@@ -140,8 +159,11 @@ function compactPanel(id, skills) {
     svg.call(graph.renderCompact);
 }
 
-['Front', 'Back', 'DevOps', 'Business'].forEach(function (s, i) {
-    compactPanel(s, skills[i]);
+['front', 'back', 'ops', 'bus'].forEach(function (s, i) {
+    var groupSkills = skills.filter(function (skill) { 
+        return skill.group === s && skill.compact; 
+    });
+    compactPanel(s, groupSkills);
 });
       </script>
     </body>
