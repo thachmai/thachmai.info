@@ -26,23 +26,36 @@ function skillGraph() {
         return (i + 1) * COMPACT_HEIGHT - r + 2;
     }
 
-    function barFull(x, y) {
+    function barX(i, length) {
+        var x0 = width * COMPACT_DIVIDER + r * 2 + r / GOLDEN;
+        return x0 + i * length + i * (r * 2 + r / GOLDEN); 
+    }
+
+    function barLength() {
+        return Math.min(90, (width - width * COMPACT_DIVIDER - r * 5) / 4);
+    } 
+
+    function barFull(x, y, l) {
+        if (!l) l = 0;
         return ['M', x, y - r, 'a', r, r, '0 0 0 0 ', 2 * r,
-        'h 0',
-        'a', r, r, '0 0 0 0', -2 * r, 
-        'h 0 Z'].join(' ');
+            'h', l,
+            'a', r, r, '0 0 0 0', -2 * r, 
+            'h', -l , 'Z'].join(' ');
     }
 
-    function barFirst(x, y) {
-        return ['M', x, y - r, 'a', r, r, '0 0 0 0', 2 * r, 'h 0 v', -2 * r, 'Z'].join(' ');
+    function barFirst(x, y, l) {
+        if (!l) l = 0;
+        return ['M', x + l/2, y - r, 'h', -l/2,
+            'a', r, r, '0 0 0 0', 2 * r, 'h', l/2 , 'v', -2 * r, 'Z'].join(' ');
     }
 
-    function barSecond(x, y) {
-        return ['M', x, y - r, 'h 0 a', r, r, '0 0 1 0', 2 * r, 'h 0 Z',].join(' ');
+    function barSecond(x, y, l) {
+        if (!l) l = 0;
+        return ['M', x + l/2, y - r, 'h', l/2, 'a', r, r, '0 0 1 0', 2 * r, 'h', -l/2 , 'Z',].join(' ');
     }
 
     function circle(d, i) {
-        var x = width * COMPACT_DIVIDER + (i + 1) * ( r * 2 + r / GOLDEN );
+        var x = barX(i, 0);
         var y = 0;
 
         if (d !== 0.5) {
@@ -92,10 +105,21 @@ function skillGraph() {
     };
 
     me.transitionToBar = function (selection, padding, duration) {
-        var x;
+        function transStart() {
+            transCount++;
+        }
+        function transEnd(next) {
+            if (--transCount) return;
+console.log(transCount)
+            next.call(this);
+        }
+
+        var transCount = 0;
 
         selection.each(function (d, i) {
             var binding = d3.select(this).selectAll('.skill');
+            var that = this;
+            var x;
 
             binding.select('text').attr('x', function () {
                 x = parseFloat(d3.select(this).attr('x')) + padding;
@@ -115,7 +139,7 @@ function skillGraph() {
 
             // transition to center position
             binding.select('text').transition().duration(duration)
-                .attr('x', width * COMPACT_DIVIDER);
+                .attr('x', width * COMPACT_DIVIDER).each(transStart).each('end', transEnd.bind(that, next));
 
             binding.selectAll('.bar').each(function (d, i) {
                 var x = width * COMPACT_DIVIDER + (i + 1) * ( r * 2 + r / GOLDEN );
@@ -123,14 +147,42 @@ function skillGraph() {
 
                 if (d === 0.5) {
                     d3.select(this).select('path:nth-of-type(1)')
-                        .transition().duration(duration).attr('d', barFirst(x, y));
+                        .transition().duration(duration).attr('d', barFirst(x, y))
+                        .each(transStart).each('end', transEnd.bind(that, next));
                     d3.select(this).select('path:nth-of-type(2)')
-                        .transition().duration(duration).attr('d', barSecond(x, y));
+                        .transition().duration(duration).attr('d', barSecond(x, y))
+                        .each(transStart).each('end', transEnd.bind(that, next));
                 } else {
                     d3.select(this).select('path').transition().duration(duration)
-                        .attr('d', barFull(x, y));
+                        .attr('d', barFull(x, y))
+                        .each(transStart).each('end', transEnd.bind(that, next));
                 }
             });
+
+            // place circles to their final bar position
+            function next() {
+                console.log('next');
+                d3.select(this).selectAll('.skill').each(function (d, line) {
+                    d3.select(this).selectAll('.bar').each(function (d, column) {
+                        var l = barLength();
+                        console.log(l)
+                        var x = barX(column, l);
+                        var y = 0;
+                        if (d === 0.5) {
+                            d3.select(this).select('path:nth-of-type(1)')
+                                .transition().duration(duration).attr('d', barFirst(x, y, l))
+                                .each(transStart).each('end', transEnd.bind(that, next));
+                            d3.select(this).select('path:nth-of-type(2)')
+                                .transition().duration(duration).attr('d', barSecond(x, y, l))
+                                .each(transStart).each('end', transEnd.bind(that, next));
+                        } else {
+                            d3.select(this).select('path').transition().duration(duration)
+                                .attr('d', barFull(x, y, l))
+                                .each(transStart).each('end', transEnd.bind(that, next));
+                        }
+                    });
+                });
+            }
         });
     };
 
