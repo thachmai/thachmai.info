@@ -110,7 +110,6 @@ function skillGraph() {
         }
         function transEnd(next) {
             if (--transCount) return;
-console.log(transCount)
             next.call(this);
         }
 
@@ -161,24 +160,19 @@ console.log(transCount)
 
             // place circles to their final bar position
             function next() {
-                console.log('next');
                 d3.select(this).selectAll('.skill').each(function (d, line) {
                     d3.select(this).selectAll('.bar').each(function (d, column) {
                         var l = barLength();
-                        console.log(l)
                         var x = barX(column, l);
                         var y = 0;
                         if (d === 0.5) {
                             d3.select(this).select('path:nth-of-type(1)')
-                                .transition().duration(duration).attr('d', barFirst(x, y, l))
-                                .each(transStart).each('end', transEnd.bind(that, next));
+                                .transition().duration(duration).attr('d', barFirst(x, y, l));
                             d3.select(this).select('path:nth-of-type(2)')
-                                .transition().duration(duration).attr('d', barSecond(x, y, l))
-                                .each(transStart).each('end', transEnd.bind(that, next));
+                                .transition().duration(duration).attr('d', barSecond(x, y, l));
                         } else {
                             d3.select(this).select('path').transition().duration(duration)
-                                .attr('d', barFull(x, y, l))
-                                .each(transStart).each('end', transEnd.bind(that, next));
+                                .attr('d', barFull(x, y, l));
                         }
                     });
                 });
