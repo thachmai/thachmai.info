@@ -14,6 +14,7 @@ function skillGraph() {
     var r = 7;
     var skills = [];
     var width = 0;
+    var dispatch = d3.dispatch('end');
     var lastMode;
     var barPadding;
 
@@ -54,6 +55,13 @@ function skillGraph() {
         return ['M', x + l/2, y - r, 'h', l/2, 'a', r, r, '0 0 1 0', 2 * r, 'h', -l/2 , 'Z',].join(' ');
     }
 
+    function barData(d) {
+        return d3.range(1, 5).map(function (n) {
+            return (d.level >= n) ? 1 :
+                ((d.level === n - 0.5) ? 0.5 : 0);
+        });
+    }
+
     function circle(d, i) {
         var x = barX(i, 0);
         var y = 0;
@@ -71,37 +79,87 @@ function skillGraph() {
 
     function renderCompact() {
         function circlesEnter(d, i) {
-            var bars = d3.range(1, 5).map(function (n) {
-                return (d.level >= n) ? 1 :
-                    ((d.level === n - 0.5) ? 0.5 : 0);
-            });
+            var bars = barData(d);
 
             d3.select(this).selectAll('.bar').data(bars)
                 .enter()
                 .append('g').attr('class', 'bar').attr('transform', function (d) {
                     // watch out, it's the outter i
-                    return 'translate(0 ' + skillBarY(d, i) + ')';
                 }).each(circle);
         }
 
         var binding = d3.select(this).selectAll('.skill').data(skills, function (d) { return d.id; });
-        var enter = binding.enter().append('g').attr('class', 'skill');
+        var enter = binding.enter().append('g').attr('class', 'skill').attr('transform', function (d, i) {
+            return 'translate(0 ' + skillBarY(d, i) + ')';
+        });
 
         lastMode = 'compact';
 
         // labels
         enter.append('text').text(function (d) { return d.sname; })
             .attr('text-anchor', 'end')
-            .attr('x', barTextX(0)).attr('y', function (d, i) { return (i + 1) * COMPACT_HEIGHT; });
+            .attr('x', barTextX(0)).attr('y', 6);
 
         // circles
         enter.each(circlesEnter);
+    }
+
+    function renderBar() {
+        var binding = d3.select(this).selectAll('.skill').data(skills, function (d) { return d.id; });
+        var enter = binding.enter().append('g').attr('class', 'skill').attr('transform', function (d, i) {
+            return 'translate(0 ' + skillBarY(d, i) + ')';
+        });
+
+        binding.each(function (d) {
+            d3.select(this).selectAll('.bar').data(barData(d));
+        });
+        lastMode = 'bar';
+
+        // update
+        binding.transition().attr('transform', function (d, i) {
+            return 'translate(0 ' + skillBarY(d, i) + ')';
+        });
+        binding.select('text').attr('x', barTextX(0)).text(function (d) { return d.lname; });
+        binding.selectAll('path').remove();
+
+        // enter
+        enter.style('opacity', 0).transition().delay(function (d, i) { return i * 100; }).style('opacity', 1);
+
+        enter.append('text').attr('x', barTextX(0))
+            .text(function (d) { return d.lname; }).attr('y', 6)
+            .attr('text-anchor', 'end');
+
+        enter.each(function (d) {
+            d3.select(this).selectAll('.bar').data(barData(d))
+                .enter().append('g').attr('class', 'bar');
+        });
+        
+        binding.selectAll('.bar').each(function (d, i) {
+            var l = barLength();
+            var x = barX(i, l);
+            var y = 0;
+
+            if (d === 0.5) {
+                d3.select(this).append('path').attr('d', barFirst(x, y, l)).attr('class', 'skill-fill');
+                d3.select(this).append('path').attr('d', barSecond(x, y, l)).attr('class', 'skill-empty');
+            } else {
+                d3.select(this).append('path').attr('d', barFull(x, y, l))
+                    .attr('class', d === 0 ? 'skill-empty' : 'skill-fill');
+            }
+        });
+
+        // exit
+        binding.exit().transition().remove();
     }
 
     // "this" must refer to the node to render into
     // returns the size of the graph in pixels
     me.renderCompact = function (selection) {
         selection.each(renderCompact);
+    };
+
+    me.renderBar = function (selection) {
+        selection.each(renderBar);
     };
 
     me.transitionToBar = function (selection, padding, duration) {
@@ -161,21 +219,30 @@ function skillGraph() {
             // place circles to their final bar position
             function next() {
                 d3.select(this).selectAll('.skill').each(function (d, line) {
+                    d3.selectAll('text').transition().delay(duration).text(function (d) { return d.lname; });
+
                     d3.select(this).selectAll('.bar').each(function (d, column) {
                         var l = barLength();
                         var x = barX(column, l);
                         var y = 0;
                         if (d === 0.5) {
                             d3.select(this).select('path:nth-of-type(1)')
-                                .transition().duration(duration).attr('d', barFirst(x, y, l));
+                                .transition().duration(duration).attr('d', barFirst(x, y, l))
+                                .each(transStart).each('end', transEnd.bind(null, end));
                             d3.select(this).select('path:nth-of-type(2)')
-                                .transition().duration(duration).attr('d', barSecond(x, y, l));
+                                .transition().duration(duration).attr('d', barSecond(x, y, l))
+                                .each(transStart).each('end', transEnd.bind(null, end));
                         } else {
                             d3.select(this).select('path').transition().duration(duration)
-                                .attr('d', barFull(x, y, l));
+                                .attr('d', barFull(x, y, l))
+                                .each(transStart).each('end', transEnd.bind(null, end));
                         }
                     });
                 });
+            }
+
+            function end() {
+                dispatch.end();
             }
         });
     };
@@ -199,6 +266,8 @@ function skillGraph() {
     me.estHeight = function () {
         return (skills.length + 1) * COMPACT_HEIGHT;
     };
+
+    d3.rebind(me, dispatch, 'on');
 
     return me;
 }

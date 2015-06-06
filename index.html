@@ -95,6 +95,16 @@ function paperCombine(originatorId) {
         var graph = skillGraph().skills(skills).width(width);
         d3.select('#' + originatorId + ' svg').attr('width', width + 'px')
             .call(graph.transitionToBar, xOffset, duration);
+
+        var groupSkills = skills.filter(function (s) { return s.group === originatorId; });
+        var barGraph = skillGraph().skills(groupSkills).width(width);
+        var height = barGraph.estHeight();
+        d3.select('#' + originatorId + ' svg').transition().duration(duration)
+            .attr('height', height + 'px');
+
+        graph.on('end', function () {
+            d3.select('#' + originatorId + ' svg').call(barGraph.renderBar);
+        });
    }
 
     d3.selectAll('.three.columns').transition()//.duration(4000)
@@ -133,8 +143,8 @@ var skills = [
     Skill('back', 'c#', 'C#', 'C#', 3.5, true, ''),
     Skill('back', 'sql', 'SQL', 'SQL', 3.5, true, ''),
     Skill('back', 'nosql', 'NoSQL', 'NoSQL', 3, true, ''),
-    Skill('back', 'perf', 'Perf. Test', 'Performance Test', 2.5, false, ''),
-    Skill('back', 'haskell', 'Haskell', 'Haskell', 3, false, ''),
+    Skill('back', 'algo', 'Algorithm', 'Algorithm', 3, false, ''),
+    Skill('back', 'distri', 'D. System', 'Distributed System', 3, false, ''),
 
     Skill('ops', 'linux', 'Linux', 'Linux', 3, true, ''),
     Skill('ops', 'win', 'Windows', 'Windows', 3, false, ''),
