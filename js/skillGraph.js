@@ -97,7 +97,10 @@ function skillGraph() {
         selection.each(function (d, i) {
             var binding = d3.select(this).selectAll('.skill');
 
-            binding.select('text').attr('x', function () { return x = this.x.baseVal[0].value + padding; });
+            binding.select('text').attr('x', function () {
+                x = parseFloat(d3.select(this).attr('x')) + padding;
+                return x;
+            });
             binding.selectAll('.bar').each(function (d, i) {
                 var x2 = x + (i + 1) * ( r * 2 + r / GOLDEN );
                 var y = 0;
@@ -110,6 +113,24 @@ function skillGraph() {
                 }
             });
 
+            // transition to center position
+            binding.select('text').transition().duration(duration)
+                .attr('x', width * COMPACT_DIVIDER);
+
+            binding.selectAll('.bar').each(function (d, i) {
+                var x = width * COMPACT_DIVIDER + (i + 1) * ( r * 2 + r / GOLDEN );
+                var y = 0;
+
+                if (d === 0.5) {
+                    d3.select(this).select('path:nth-of-type(1)')
+                        .transition().duration(duration).attr('d', barFirst(x, y));
+                    d3.select(this).select('path:nth-of-type(2)')
+                        .transition().duration(duration).attr('d', barSecond(x, y));
+                } else {
+                    d3.select(this).select('path').transition().duration(duration)
+                        .attr('d', barFull(x, y));
+                }
+            });
         });
     };
 

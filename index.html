@@ -84,7 +84,7 @@ function paperCombine(originatorId) {
         var front = document.getElementById('Front');
         var selected = document.getElementById(originatorId);
         xOffset = selected.getBoundingClientRect().left - front.getBoundingClientRect().left;
-        var duration = 3 * xOffset;
+        var duration = Math.max(100 * Math.log2(xOffset), 600);
 
         d3.select(selected).style('width', '100%').style('margin-left', '0%');
         d3.selectAll('.three.columns:not(#' + originatorId + ')').style('display', 'none');
