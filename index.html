@@ -71,6 +71,7 @@ ga('send', 'pageview');
       </div>
       <script src="d3.v3.min.js"></script>
       <script src="js/skillGraph.js"></script>
+      <script src="js/skillSet.js"></script>
       <script>
 function paperCombine(originatorId) {
     var transCount = 0;
@@ -102,8 +103,12 @@ function paperCombine(originatorId) {
         d3.select('#' + originatorId + ' svg').transition().duration(duration)
             .attr('height', height + 'px');
 
+        var ss = skillSet().skills(skills).width(300);
+
         graph.on('end', function () {
-            d3.select('#' + originatorId + ' svg').call(barGraph.renderBar);
+            console.log(ss);
+            d3.select('#' + originatorId + ' svg').call(barGraph.renderBar)
+                .append('g').attr('class', 'skills').call(ss.render);
         });
    }
 
@@ -134,27 +139,27 @@ function Skill(group, id, sname, lname, level, compact, desc) {
 }
 
 var skills = [
-    Skill('front', 'js', 'JS', 'Javascript', 4, true, ''),
+    Skill('front', 'js', 'Javascript', 'Javascript', 4, true, ''),
     Skill('front', 'html5', 'HTML5', 'HTML5', 3.5, true, ''),
     Skill('front', 'dv', 'Data Vis.', 'Data Visualization', 3.5, true, ''),
     Skill('front', 'wp', 'Web Perf.', 'Web Performance', 3, false, ''),
-    Skill('front', 'ui', 'Design', 'UI Design', 2.5, false, ''),
+    Skill('front', 'ui', 'Design', 'UI Design', 2, false, ''),
 
     Skill('back', 'c#', 'C#', 'C#', 3.5, true, ''),
     Skill('back', 'sql', 'SQL', 'SQL', 3.5, true, ''),
     Skill('back', 'nosql', 'NoSQL', 'NoSQL', 3, true, ''),
     Skill('back', 'algo', 'Algorithm', 'Algorithm', 3, false, ''),
-    Skill('back', 'distri', 'D. System', 'Distributed System', 3, false, ''),
+    Skill('back', 'distri', 'D. System', 'Distributed System', 2.5, false, ''),
 
     Skill('ops', 'linux', 'Linux', 'Linux', 3, true, ''),
     Skill('ops', 'win', 'Windows', 'Windows', 3, false, ''),
     Skill('ops', 'docker', 'Docker', 'Docker', 2.5, true, ''),
     Skill('ops', 'auto', 'IT Auto.', 'IT Automation', 2.5, true, ''),
-    Skill('ops', 'scripts', 'Scripting', 'Shell Scripting', 3, false, ''),
+    Skill('ops', 'scripts', 'Scripting', 'Shell Scripting', 2.5, false, ''),
 
     Skill('bus', 'danal', 'D. Analys', 'Data Analysis', 3, true, ''),
     Skill('bus', 'geo', 'Geo Sys.' , 'Geographic System', 3, true, ''),
-    Skill('bus', 'learn', 'Learning', 'Learning Speed', 3, true, ''),
+    Skill('bus', 'abstract', 'Modelling', 'Modelling & Abstraction', 3, true, ''),
     Skill('bus', 'process', 'Bus. Process', 'Business Process', 2.5, false, ''),
     Skill('bus', 'crit', 'Crit. Think.', 'Critical Thinking', 3, false, ''),
 ];
