@@ -98,15 +98,15 @@ function paperCombine(originatorId) {
             .call(graph.transitionToBar, xOffset, duration);
 
         var groupSkills = skills.filter(function (s) { return s.group === originatorId; });
+        var selection = groupSkills.map(function (s) { return s.id; });
         var barGraph = skillGraph().skills(groupSkills).width(width);
         var height = barGraph.estHeight();
         d3.select('#' + originatorId + ' svg').transition().duration(duration)
             .attr('height', height + 'px');
 
-        var ss = skillSet().skills(skills).width(300);
+        var ss = skillSet().skills(skills).width(300).selection(selection);
 
         graph.on('end', function () {
-            console.log(ss);
             d3.select('#' + originatorId + ' svg').call(barGraph.renderBar)
                 .append('g').attr('class', 'skills').call(ss.render);
         });

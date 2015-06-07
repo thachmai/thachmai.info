@@ -25,13 +25,27 @@ svg text {
 }
 
 .skill-fill {
-    stroke: #222;
-    fill: #222;
+    stroke: #424242;
+    fill: #424242;
     stroke-width: 1px;
 }
 
 .skill-empty {
-    stroke: #222;
+    stroke: #424242;
     fill: none;
     stroke-width: 1px;
+}
+
+.skill-selection {
+    fill: #9E9E9E;
+}
+.skill-selection.selected {
+    fill: #222;
+}
+
+.skill-group {
+    fill: #222;
+}
+.skill-group.selected {
+    fill: #222;
 }
