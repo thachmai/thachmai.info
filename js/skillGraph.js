@@ -33,7 +33,7 @@ function skillGraph() {
     }
 
     function barLength() {
-        return Math.min(90, (width - width * COMPACT_DIVIDER - r * 5) / 4);
+        return Math.min(90, (width - width * COMPACT_DIVIDER - r * 12) / 4);
     } 
 
     function barFull(x, y, l) {
