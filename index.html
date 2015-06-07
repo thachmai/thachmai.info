@@ -110,6 +110,14 @@ function paperCombine(originatorId) {
             d3.select('#' + originatorId + ' svg').call(barGraph.renderBar)
                 .append('g').attr('class', 'skills').call(ss.render);
         });
+
+        ss.on('change', function (selection) {
+            var svg = d3.select('#' + originatorId + ' svg');
+            barGraph.skills(skills.filter(function (s) {
+                return selection.indexOf(s.id) > -1;
+            }));
+            svg.attr('height', barGraph.estHeight() + 'px').call(barGraph.renderBar)
+        });
    }
 
     d3.selectAll('.three.columns').transition()//.duration(4000)
@@ -122,8 +130,11 @@ function paperCombine(originatorId) {
         .each('end', makeSingle);
 }
 
+var clicked = false;
 d3.selectAll('.three.columns').on('click', function () {
+    if (clicked) return;
     paperCombine(this.id);
+    clicked = true;
 });
 
 function Skill(group, id, sname, lname, level, compact, desc) {

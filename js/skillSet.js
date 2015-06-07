@@ -5,6 +5,7 @@ function skillSet() {
     var skills = [];
     var selection = [];
     var width = 0;
+    var dispatch = d3.dispatch('change');
 
     var groups;
 
@@ -17,6 +18,20 @@ function skillSet() {
 
     function groupX(d, i) {
         return i * groupW();
+    }
+
+    function click(d) {
+        var i = selection.indexOf(d.id);
+        var dThis = d3.select(this);
+        if (i === -1) {
+            selection.push(d.id);
+            dThis.classed('selected', true);
+        } else {
+            selection.splice(i, 1);
+            dThis.classed('selected', false);
+        }
+
+        dispatch.change(selection);
     }
 
     function render() {
@@ -41,6 +56,7 @@ function skillSet() {
                 .text(function (d) { return d.sname; })
                 .attr('x', function (d, row) { return groupX(d, column); })
                 .attr('y', function (d, row) { return 20 + (row + 1) * 15; })
+                .on('click', click)
                 .transition().delay(function (d, i) { return 100 + 100 * i + column * 500; })
                 .style('opacity', 1);
         });
@@ -80,6 +96,8 @@ function skillSet() {
     me.render = function (selection) {
         selection.each(render);
     };
+
+    d3.rebind(me, dispatch, 'on');
 
     return me;
 }

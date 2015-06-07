@@ -115,15 +115,13 @@ function skillGraph() {
         });
         lastMode = 'bar';
 
-        // update
         binding.transition().attr('transform', function (d, i) {
             return 'translate(0 ' + skillBarY(d, i) + ')';
         });
         binding.select('text').attr('x', barTextX(0)).text(function (d) { return d.lname; });
         binding.selectAll('path').remove();
 
-        // enter
-        enter.style('opacity', 0).transition().delay(function (d, i) { return i * 100; }).style('opacity', 1);
+        enter.style('opacity', 0).transition().delay(function (d, i) { return 400; }).style('opacity', 1);
 
         enter.append('text').attr('x', barTextX(0))
             .text(function (d) { return d.lname; }).attr('y', 6)
@@ -148,8 +146,7 @@ function skillGraph() {
             }
         });
 
-        // exit
-        binding.exit().transition().remove();
+        binding.exit().remove();
     }
 
     // "this" must refer to the node to render into
@@ -264,7 +261,7 @@ function skillGraph() {
     
     // this should be called after .skills and width to get the height for the graph
     me.estHeight = function () {
-        return (skills.length + 1) * COMPACT_HEIGHT;
+        return Math.max(100, (skills.length + 1) * COMPACT_HEIGHT);
     };
 
     d3.rebind(me, dispatch, 'on');
