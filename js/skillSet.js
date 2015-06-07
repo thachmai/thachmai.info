@@ -60,6 +60,16 @@ function skillSet() {
                 .transition().delay(function (d, i) { return 100 + 100 * i + column * 500; })
                 .style('opacity', 1);
         });
+
+        // scan through the text to make sure nothing is larger than the width limit
+        binding.selectAll('text').each(function () {
+            var limit = groupW() - 5;
+            var rect = this.getBoundingClientRect(); 
+            var w = rect.right - rect.left;
+            if (w > limit) {
+                d3.select(this).attr('textLength', limit).attr('lengthAdjust', 'spacingAndGlyphs');
+            }
+        });
     }
 
     me.skills = function (value) {

@@ -30,17 +30,33 @@ ga('send', 'pageview');
     </head>
     <body class="ambient">
         <!-- top header -->
-        <div class="surround" style="height: 50px;">
+        <div class="surround" style="height: 60px;">
             <div class="container">
-                <h4>Thach MAI</h4>
+                <div class="row">
+                    <div class="six columns">
+                        <h4 style="margin-top: 10px;">Thach MAI</h4>
+                    </div>
+                    <div class="six columns">
+                        <section class="contact-info">
+                            <b>Independant Full-Stack Software Engineer</b><br/>
+                            Grenoble, France<br/>
+                            <a href="mailto:contact@thachmai.info">contact@thachmai.info</a>
+                        </section>
+                    </div>
             </div>
         </div>
 
         <!-- main content -->
         <div class="container">
             <div class="row paper">
-                <h4>Who I am</h4>
-                <p>This index.html page is a placeholder with the CSS, font and favicon. It's just waiting for you to add some content! If you need some help hit up the <a href="http://www.getskeleton.com">Skeleton documentation</a>.</p>
+                <p>
+                I'm a software engineer with a solid track record in deliverying high-value solutions.
+                I'm comfortable with the full stack of software development, with current emphasis on data visualization
+                and advanced HTML5 functionalities.
+                </p>
+                <p>
+                If you'd like to have more information about my projects and portfolio, <a href="mailto:contact@thachmai.info">drop me a line</a> and I'd be happy to oblige.
+                </p>
             </div>
 
             <div class="row">
@@ -59,15 +75,73 @@ ga('send', 'pageview');
             </div>
 
              <div class="row paper">
-                <h4>What I've been working on</h4>
-                <p>This index.html page is a placeholder with the CSS, font and favicon. It's just waiting for you to add some content! If you need some help hit up the <a href="http://www.getskeleton.com">Skeleton documentation</a>.</p>
+                <h6>Experience</h6>
+                <div class="row">
+                    <div class="one column">Present</div>
+                    <div class="three columns">Independent Consultant</div>
+                    <div class="eight columns"><b>BeeBuzziness</b></div>
+                </div>
+                <div class="row">
+                    <div class="one column">2014</div>
+                    <div class="three columns">Software Engineer</div>
+                    <div class="eight columns"><b>BeeBuzziness</b></div>
+                </div>
+                <div class="row">
+                    <div class="one column">2014</div>
+                    <div class="three columns">Software Engineer</div>
+                    <div class="eight columns"><b>Digimind</b></div>
+                </div>
+                <div class="row">
+                    <div class="one column">2014</div>
+                    <div class="three columns">Senior R&D Engineer</div>
+                    <div class="eight columns"><b>Eloquant</b></div>
+                </div>
+                <div class="row">
+                    <div class="one column">2009</div>
+                    <div class="three columns">Software Consultant</div>
+                    <div class="eight columns"><b>Intitek</b></div>
+                </div>
+                <div class="row">
+                    <div class="one column">2007</div>
+                    <div class="three columns">Senior Software Engineer</div>
+                    <div class="eight columns"><b>Asia Pacific Breweries</b></div>
+                </div>
+                <div class="row">
+                    <div class="one column">2006</div>
+                    <div class="three columns">Software Consultant</div>
+                    <div class="eight columns"><b>Astek</b></div>
+                </div>
+                <div class="row">
+                    <div class="one column">2005</div>
+                    <div class="three columns">Department Manager</div>
+                    <div class="eight columns"><b>TRG International</b></div>
+                </div>
+                <div class="row">
+                    <div class="one column">2004</div>
+                    <div class="three columns">Team Lead</div>
+                    <div class="eight columns"><b>DHS Communications</b></div>
+                </div>
+                <div class="row">
+                    <div class="one column">2002</div>
+                    <div class="three columns">Software Engineer</div>
+                    <div class="eight columns"><b>TMA Solutions</b></div>
+                </div>
             </div>
 
              <div class="row paper">
-                <h4>What I studied</h4>
-                <p>This index.html page is a placeholder with the CSS, font and favicon. It's just waiting for you to add some content! If you need some help hit up the <a href="http://www.getskeleton.com">Skeleton documentation</a>.</p>
+                <h6>Education</h6>
+                <div class="row">
+                    <div class="one column">2001</div>
+                    <div class="three columns">Computer Prorammer Diploma (with Honors)</div>
+                    <div class="eight columns"><b>Algonquin College</b></div>
+                </div>
             </div>
 
+      </div>
+      <div class="footer">
+          <div class="container">
+              Copyright 2015 <a href="mailto:contact@thachmai.info">Thach MAI</a>. All rights reserved.
+          </div>
       </div>
       <script src="d3.v3.min.js"></script>
       <script src="js/skillGraph.js"></script>
@@ -88,9 +162,9 @@ function paperCombine(originatorId) {
         var duration = Math.max(100 * Math.log2(xOffset), 600);
 
         d3.select(selected).style('width', '100%').style('margin-left', '0%');
-        d3.selectAll('.three.columns:not(#' + originatorId + ')').style('display', 'none');
+        d3.selectAll('.three.columns.paper:not(#' + originatorId + ')').style('display', 'none');
         d3.select('#' + originatorId + ' h6').style('margin-left', xOffset + 'px').transition().duration(duration)
-            .style('margin-left', '0px');
+            .style('margin-left', '0px').text('Expertise');
 
         var width = selected.clientWidth - 16;
         var graph = skillGraph().skills(skills).width(width);
@@ -104,7 +178,8 @@ function paperCombine(originatorId) {
         d3.select('#' + originatorId + ' svg').transition().duration(duration)
             .attr('height', height + 'px');
 
-        var ss = skillSet().skills(skills).width(300).selection(selection);
+        var ssW = width / 2 - 200;
+        var ss = skillSet().skills(skills).width(ssW).selection(selection);
 
         graph.on('end', function () {
             d3.select('#' + originatorId + ' svg').call(barGraph.renderBar)
@@ -120,7 +195,9 @@ function paperCombine(originatorId) {
         });
    }
 
-    d3.selectAll('.three.columns').transition()//.duration(4000)
+    d3.selectAll('.three.columns.paper')
+        .style('cursor', 'auto')
+        .transition()
         .styleTween('width', function() { return d3.interpolate('22%', '25%'); })
         .styleTween('margin-left', function() { 
             var start = this.id === 'front' ? '0%' : '4%';
@@ -131,11 +208,14 @@ function paperCombine(originatorId) {
 }
 
 var clicked = false;
-d3.selectAll('.three.columns').on('click', function () {
-    if (clicked) return;
-    paperCombine(this.id);
-    clicked = true;
-});
+
+d3.selectAll('.three.columns.paper')
+    .style('cursor', 'pointer')
+    .on('click', function () {
+        if (clicked) return;
+        paperCombine(this.id);
+        clicked = true;
+    });
 
 function Skill(group, id, sname, lname, level, compact, desc) {
     if (!(this instanceof Skill)) return new Skill(group, id, sname, lname, level, compact, desc);
@@ -170,9 +250,9 @@ var skills = [
 
     Skill('bus', 'danal', 'D. Analys', 'Data Analysis', 3, true, ''),
     Skill('bus', 'geo', 'Geo Sys.' , 'Geographic System', 3, true, ''),
-    Skill('bus', 'abstract', 'Modelling', 'Modelling & Abstraction', 3, true, ''),
+    Skill('bus', 'fa', 'F. Analys', 'Functional Analysis', 3, true, ''),
     Skill('bus', 'process', 'Bus. Process', 'Business Process', 2.5, false, ''),
-    Skill('bus', 'crit', 'Crit. Think.', 'Critical Thinking', 3, false, ''),
+    Skill('bus', 'math', 'Math', 'Mathematics', 3, false, ''),
 ];
 
 function compactPanel(id, skills) {

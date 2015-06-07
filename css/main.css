@@ -7,6 +7,19 @@
     box-shadow: 0 0 1px gray;
 }
 
+.contact-info {
+    float: right;
+    line-height: 1.2;
+    text-align: right;
+}
+
+.footer {
+    margin-top: 10px;
+    font-size: 14px;
+    font-variant: small-caps;
+    text-align: right;
+}
+
 .ambient {
     background: #FAFAFA;
 }
@@ -38,6 +51,7 @@ svg text {
 
 .skill-selection {
     fill: #9E9E9E;
+    cursor: pointer;
 }
 .skill-selection.selected {
     fill: #222;
