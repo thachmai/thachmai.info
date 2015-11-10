@@ -1,9 +1,5 @@
 'use strict';
 
-// this thing is turning into a rather scary piece of fine pasta
-// so.... plan the morphism first maybe before jumping into code? :)
-// Finish the first version and refactor.
-
 function skillGraph() {
     function me() {
     }
