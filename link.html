@@ -1,0 +1,14 @@
+<script>
+'use strict';
+
+function fullUrl(short) {
+    var urlMap = {
+        'gyneco': 'https://www.doctolib.fr/gynecologue/grenoble/marc-schneider'
+    };
+
+    return urlMap[short];
+}
+
+var params = window.location.search;
+window.location.href = fullUrl(params.substring(params.indexOf('name') + 5));
+</script>
